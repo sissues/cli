@@ -11,14 +11,6 @@
     background: #222;
 }
 
-.menu-item {
-    margin-bottom: 1;
-}
-
-.menu-actions {
-    margin-bottom: 2;
-}
-
 #content {
     width: 75%;
     padding: 1;
@@ -26,10 +18,27 @@
 
 #markdown_viewer {
     padding: 1;
+    height: 60%;
 }
 
 #test_output {
     height: 20%;
     padding: 1;
     border-top: solid #333;
+    margin-top: 1;
+}
+
+/* Style buttons */
+
+.view-button, .test-button {
+    background: #444;
+    border: solid #666;
+    color: #fff;
+    padding: 1;
+    margin: 1 0; /* Adjusted margin */
+    text-align: center;
+}
+
+.view-button:hover, .test-button:hover {
+    background: #555;
 }

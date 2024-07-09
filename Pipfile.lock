@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "784fd663b57ab48e1045aede9651b059a01c7f62f4d95710f47e393b1f54d17b"
+            "sha256": "c0a59cb5db7dc0bbcd2f634b6b44b6eca3ff86281d3de79bd12fc33f6b540c76"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.8"
+            "python_version": "3.12"
         },
         "sources": [
             {
@@ -72,6 +72,7 @@
                 "sha256:a9886eb96bd6391b8795244d2b8fe592204556c42264ea7513a1211584e17366"
             ],
             "index": "pypi",
+            "markers": "python_version >= '3.8' and python_version < '4.0'",
             "version": "==0.72.0"
         },
         "textualize": {
@@ -189,14 +190,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==1.3.1"
         },
-        "async-timeout": {
-            "hashes": [
-                "sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f",
-                "sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028"
-            ],
-            "markers": "python_version < '3.11'",
-            "version": "==4.0.3"
-        },
         "attrs": {
             "hashes": [
                 "sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30",
@@ -212,14 +205,6 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==8.1.7"
-        },
-        "colorama": {
-            "hashes": [
-                "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44",
-                "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
-            ],
-            "markers": "platform_system == 'Windows'",
-            "version": "==0.4.6"
         },
         "frozenlist": {
             "hashes": [
@@ -526,6 +511,7 @@
                 "sha256:a9886eb96bd6391b8795244d2b8fe592204556c42264ea7513a1211584e17366"
             ],
             "index": "pypi",
+            "markers": "python_version >= '3.8' and python_version < '4.0'",
             "version": "==0.72.0"
         },
         "textual-dev": {
@@ -534,6 +520,7 @@
                 "sha256:e0366ab6f42c128d7daa37a7c418e61fe7aa83731983da990808e4bf2de922a1"
             ],
             "index": "pypi",
+            "markers": "python_version >= '3.8' and python_version < '4.0'",
             "version": "==1.5.1"
         },
         "typing-extensions": {
