@@ -1,0 +1,35 @@
+/* Style for the Markdown viewer TUI */
+
+.container {
+    height: 100%;
+}
+
+#menu {
+    width: 25%;
+    padding: 1;
+    border-right: solid #333;
+    background: #222;
+}
+
+.menu-item {
+    margin-bottom: 1;
+}
+
+.menu-actions {
+    margin-bottom: 2;
+}
+
+#content {
+    width: 75%;
+    padding: 1;
+}
+
+#markdown_viewer {
+    padding: 1;
+}
+
+#test_output {
+    height: 20%;
+    padding: 1;
+    border-top: solid #333;
+}
