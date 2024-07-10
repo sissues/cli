@@ -3,15 +3,17 @@ from subprocess import Popen, PIPE
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal
-from textual.widgets import Button, Footer, MarkdownViewer, Static, Header, TextArea, Select
+from textual.notifications import Notification
+from textual.widgets import Button, Footer, MarkdownViewer, Header, TextArea, Select
 from textual import log
 
 EXERCISES_DIR = Path(__file__).parent / "exercises"
 
 
 class MarkdownApp(App):
-    """A Markdown viewer TUI application."""
 
+    TITLE = "Skill Issues Killer"
+    SUB_TITLE = "practice real-world projects"
     CSS_PATH = "app.css"
     BINDINGS = [
         ("t", "toggle_table_of_contents", "Toggle TOC"),
@@ -48,23 +50,23 @@ class MarkdownApp(App):
         exercise_names = [(exercise.stem, exercise.stem) for exercise in exercises]
         select_widget = Select(options=exercise_names, id="exercise_select")
         menu.mount(select_widget)
-        menu.mount(Button("View", id="view", classes="view-button"))
-        menu.mount(Button("Run Tests", id="test", classes="test-button"))
+        menu.mount(Button("View", id="view", classes="view-button1", variant="primary"))
+        menu.mount(Button("Run Tests", id="test", classes="test-button2", variant="success"))
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button press events."""
-        log("got the message")
         button_id = event.button.id
-        log(f"button id = {button_id}")
         select_widget = self.query_one("#exercise_select", Select)
         exercise_name = select_widget.value
         selected_exercise = EXERCISES_DIR / f"{exercise_name}.md"
-        log(f"SelectedExercise = {selected_exercise}")
 
         if button_id == "view":
             self.current_markdown_path = selected_exercise
             markdown_viewer = self.query_one("#markdown_viewer", MarkdownViewer)
-            await markdown_viewer.go(selected_exercise)
+            try:
+                await markdown_viewer.go(selected_exercise)
+            except Exception:
+                select_widget.notify("Please select a file", severity="error", timeout=5)
             self.query_one("#content").display = True
 
         elif button_id == "test":
@@ -87,6 +89,8 @@ class MarkdownApp(App):
         test_output.insert("multiline\na lot \n of text\n testing\n if \nscrolling\nworks")
         if stderr:
             test_output.insert(stderr.decode())
+
+        test_output.notify("Tests execution done", timeout=3)
 
     def action_toggle_table_of_contents(self) -> None:
         """Toggle the display of the table of contents."""
