@@ -42,3 +42,7 @@
 .view-button:hover, .test-button:hover {
     background: #555;
 }
+
+.menu_widget {
+    margin: 1 1;  /* top, right, bottom, left margins */
+}
