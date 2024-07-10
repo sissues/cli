@@ -3,11 +3,10 @@ from subprocess import Popen, PIPE
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal
-from textual.notifications import Notification
 from textual.widgets import Button, Footer, MarkdownViewer, Header, TextArea, Select
 from textual import log
 
-EXERCISES_DIR = Path(__file__).parent / "exercises"
+from exercises_utils import EXERCISES_DIR, ExercisesUtils
 
 
 class MarkdownApp(App):
@@ -23,6 +22,7 @@ class MarkdownApp(App):
 
     def __init__(self):
         super().__init__()
+        self.files_view_names = ExercisesUtils.generate_view_names_map()
         self.current_markdown_path = None
 
     def compose(self) -> ComposeResult:
@@ -44,14 +44,17 @@ class MarkdownApp(App):
 
     def show_menu(self) -> None:
         """Display the menu with available exercises."""
+        log("entered show menu")
         menu = self.query_one("#menu")
         menu.remove_children()
         exercises = list(EXERCISES_DIR.glob("*.md"))
-        exercise_names = [(exercise.stem, exercise.stem) for exercise in exercises]
+        log(f"exercises = {exercises}")
+        log(f"map = {self.files_view_names}")
+        exercise_names = [(self.files_view_names[exercise.stem], exercise.stem) for exercise in exercises]
         select_widget = Select(options=exercise_names, id="exercise_select")
         menu.mount(select_widget)
-        menu.mount(Button("View", id="view", classes="view-button1", variant="primary"))
-        menu.mount(Button("Run Tests", id="test", classes="test-button2", variant="success"))
+        menu.mount(Button("View", id="view", variant="primary"))
+        menu.mount(Button("Run Tests", id="test", variant="success"))
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button press events."""
