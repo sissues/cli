@@ -7,6 +7,7 @@ from textual.widgets import Button, Footer, MarkdownViewer, Header, TextArea, Se
 from textual import log
 
 from exercises_utils import EXERCISES_DIR, ExercisesUtils
+from project_generators.base_project_generator import BaseProjectGenerator
 
 
 class MarkdownApp(App):
@@ -88,14 +89,18 @@ class MarkdownApp(App):
                 self.run_tests(selected_exercise)
 
         if button_id == 'start':
+            if exercise_name == Select.BLANK:
+                select_widget.notify("Please select a file", severity="error", timeout=5)
+                return
             if lang == Select.BLANK:
                 select_lang_widget.notify("Please select a language", severity="error")
                 return
-            self.start_project(lang)
+            self.start_project(lang, exercise_name)
 
-    def start_project(self, lang) -> None:
+    def start_project(self, lang: str, exercise_name: str) -> None:
         test_output = self.query_one("#test_output", TextArea)
-        test_output.notify(f'Creating project structure for lang {lang}')
+        BaseProjectGenerator().generate(exercise_name)
+        test_output.notify(f'Creating project structure for lang {lang}, project {exercise_name}')
 
     def run_tests(self, markdown_path: Path) -> None:
         """Run tests for the selected exercise and display the output."""
