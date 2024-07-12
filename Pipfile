@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 textualize = "*"
 textual = "*"
+requests = "*"
+flask = "*"
 
 [dev-packages]
 textual-dev = "*"
