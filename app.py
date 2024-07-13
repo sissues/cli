@@ -1,8 +1,9 @@
+import subprocess
 from pathlib import Path
 from subprocess import Popen, PIPE
 
 from textual.app import App, ComposeResult
-from textual.containers import Container, Horizontal
+from textual.containers import Container, Horizontal, ScrollableContainer
 from textual.widgets import Button, Footer, MarkdownViewer, Header, TextArea, Select, Label
 from textual import log
 
@@ -86,7 +87,7 @@ class MarkdownApp(App):
 
             elif button_id == "test":
                 log("about to test")
-                self.run_tests(selected_exercise)
+                self.run_tests(exercise_name)
 
         if button_id == 'start':
             if exercise_name == Select.BLANK:
@@ -102,22 +103,17 @@ class MarkdownApp(App):
         BaseProjectGenerator().generate(exercise_name)
         test_output.notify(f'Creating project structure for lang {lang}, project {exercise_name}')
 
-    def run_tests(self, markdown_path: Path) -> None:
+    def run_tests(self, exercise_name: str) -> None:
         """Run tests for the selected exercise and display the output."""
         log("starting to test")
         test_output = self.query_one("#test_output", TextArea)
-        test_output.value = ""  # Clear the text area
         log("found test_output")
-        # Simulate running tests (replace with actual test commands)
-        command = ["echo", f"Running tests for {markdown_path.stem}..."]
-        process = Popen(command, stdout=PIPE, stderr=PIPE)
-        stdout, stderr = process.communicate()
-        log("command executed")
-        test_output.insert(stdout.decode())
-        test_output.insert("wooo")
-        test_output.insert("multiline\na lot \n of text\n testing\n if \nscrolling\nworks")
-        if stderr:
-            test_output.insert(stderr.decode())
+        command = f"docker-compose -f exercises_test_suites/docker_compose_{exercise_name}.yml up --build"
+        try:
+            result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+            test_output.insert(result.stdout)
+        except subprocess.CalledProcessError as e:
+            test_output.insert(f"An error occurred: {e.stderr}")
 
         test_output.notify("Tests execution done", timeout=3)
 

@@ -8,8 +8,9 @@ class BaseProjectGenerator:
         Returns the path to the Dockerfile.
         """
         # Create the project directory
-        project_dir = os.path.join(os.getcwd(), project_name)
-        os.makedirs(project_dir, exist_ok=True)
+        project_dir = os.path.join(os.getcwd(), 'my_solutions', project_name)
+        src_dir = os.path.join(project_dir, 'src')
+        os.makedirs(src_dir, exist_ok=True)
 
         # Define a generic Dockerfile content
         dockerfile_content = """
@@ -70,8 +71,3 @@ Adjust the Dockerfile according to your specific project requirements.
             readme.write(readme_content.strip())
 
         return dockerfile_path
-
-# Example usage
-generator = BaseProjectGenerator()
-dockerfile_path = generator.generate('MyAPIProject')
-print(f'Dockerfile created at: {dockerfile_path}')

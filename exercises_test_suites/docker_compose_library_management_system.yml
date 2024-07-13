@@ -3,7 +3,7 @@ version: '3.8'
 services:
   api:
     build:
-      context: ../solutions/library_management_system
+      context: ../my_solutions/library_management_system
       dockerfile: Dockerfile
     ports:
       - "5001:5000"

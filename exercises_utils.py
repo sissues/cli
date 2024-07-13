@@ -8,6 +8,6 @@ class ExercisesUtils:
     def generate_view_names_map():
         all_md_files = list(EXERCISES_DIR.glob("*.md"))
         return {
-            filename.stem: ' '.join(filename.stem.split('-')).title()
+            filename.stem: ' '.join(filename.stem.split('_')).title()
             for filename in all_md_files
         }
