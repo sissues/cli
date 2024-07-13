@@ -35,24 +35,6 @@ EXPOSE 5000
 # Run the application
 CMD [ "<start_command>" ]
         """
-        dockerfile_content = """
-        # Use the official Python image from the Docker Hub
-FROM python:3.8
-
-# Set the working directory
-WORKDIR /library_management_system
-
-RUN pip install flask
-
-# Copy the rest of the application code into the container
-COPY src/ .
-
-EXPOSE 5000
-
-# Run the Flask app
-# CMD ["flask", "run"]
-CMD ["python", "app.py"]
-        """
 
         # Write the Dockerfile to the project directory
         dockerfile_path = os.path.join(project_dir, 'Dockerfile')
