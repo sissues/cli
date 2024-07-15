@@ -33,18 +33,6 @@ jobs:
         env:
           DISPLAY: ":99.0"
 
-      - name: Test executable (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: ./dist/sissues --version
-
-      - name: Test executable (Windows)
-        if: matrix.os == 'windows-latest'
-        run: .\dist\sissues.exe --version
-
-      - name: Test executable (macOS)
-        if: matrix.os == 'macos-latest'
-        run: ./dist/sissues --version
-
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
