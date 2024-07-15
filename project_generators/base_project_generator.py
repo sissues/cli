@@ -70,4 +70,4 @@ Adjust the Dockerfile according to your specific project requirements.
         with open(readme_path, 'w') as readme:
             readme.write(readme_content.strip())
 
-        return dockerfile_path
+        return project_dir

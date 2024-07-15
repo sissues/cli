@@ -1,9 +1,7 @@
 import subprocess
-from pathlib import Path
-from subprocess import Popen, PIPE
 
 from textual.app import App, ComposeResult
-from textual.containers import Container, Horizontal, ScrollableContainer
+from textual.containers import Container, Horizontal
 from textual.widgets import Button, Footer, MarkdownViewer, Header, TextArea, Select, Label
 from textual import log
 
@@ -60,8 +58,8 @@ class MarkdownApp(App):
         menu.mount(Button("View", id="view", variant="primary", classes="menu_widget"))
         menu.mount(Button("Run Tests", id="test", variant="success", classes="menu_widget"))
 
-        select_lang_widget = Select(options=[('python', 'python'), ('javascript', 'javascript')], prompt="Select Programming Language", id="lang_select", classes="menu_widget", tooltip="Select a language to create your project's template")
-        menu.mount(select_lang_widget)
+        # select_lang_widget = Select(options=[('python', 'python'), ('javascript', 'javascript')], prompt="Select Programming Language", id="lang_select", classes="menu_widget", tooltip="Select a language to create your project's template")
+        # menu.mount(select_lang_widget)
         menu.mount(Button("Start Project", id="start", variant="warning", classes="menu_widget"))
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -71,8 +69,8 @@ class MarkdownApp(App):
         exercise_name = select_widget.value
         selected_exercise = EXERCISES_DIR / f"{exercise_name}.md"
 
-        select_lang_widget = self.query_one("#lang_select", Select)
-        lang = select_lang_widget.value
+        # select_lang_widget = self.query_one("#lang_select", Select)
+        # lang = select_lang_widget.value
 
         if button_id in ('view', 'test'):
             if exercise_name == Select.BLANK:
@@ -93,15 +91,16 @@ class MarkdownApp(App):
             if exercise_name == Select.BLANK:
                 select_widget.notify("Please select a file", severity="error", timeout=5)
                 return
-            if lang == Select.BLANK:
-                select_lang_widget.notify("Please select a language", severity="error")
-                return
-            self.start_project(lang, exercise_name)
+            # if lang == Select.BLANK:
+            #     select_lang_widget.notify("Please select a language", severity="error")
+            #     return
+            self.start_project(exercise_name)
 
-    def start_project(self, lang: str, exercise_name: str) -> None:
+    def start_project(self, exercise_name: str) -> None:
         test_output = self.query_one("#test_output", TextArea)
-        BaseProjectGenerator().generate(exercise_name)
-        test_output.notify(f'Creating project structure for lang {lang}, project {exercise_name}')
+        project_path = BaseProjectGenerator().generate(exercise_name)
+        test_output.notify(f'Creating project structure for lang project {exercise_name}')
+        ExercisesUtils.open_file_in_explorer(project_path)
 
     def run_tests(self, exercise_name: str) -> None:
         """Run tests for the selected exercise and display the output."""
@@ -110,6 +109,7 @@ class MarkdownApp(App):
         log("found test_output")
         command = f"docker-compose -f exercises_test_suites/docker_compose_{exercise_name}.yml up --build"
         try:
+            test_output.notify("Tests execution started, might take a few seconds", timeout=3)
             result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
             test_output.insert(result.stdout)
         except subprocess.CalledProcessError as e:
