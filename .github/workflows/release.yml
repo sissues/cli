@@ -29,9 +29,21 @@ jobs:
 
       - name: Build executable
         run: |
-          pipenv run pyinstaller --onefile app.py
+          pipenv run pyinstaller --onefile app.spec
         env:
           DISPLAY: ":99.0"
+
+      - name: Test executable (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: ./dist/app --version
+
+      - name: Test executable (Windows)
+        if: matrix.os == 'windows-latest'
+        run: .\dist\app.exe --version
+
+      - name: Test executable (macOS)
+        if: matrix.os == 'macos-latest'
+        run: ./dist/app --version
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
@@ -66,7 +78,7 @@ jobs:
 
       - name: Create a unique tag
         id: create_tag
-        run: echo "RELEASE_TAG=release-$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+        run: echo "RELEASE_TAG=sissues-$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
