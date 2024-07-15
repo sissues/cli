@@ -38,7 +38,7 @@ jobs:
         with:
           name: executable-${{ matrix.os }}
           path: |
-            dist/app
+            dist/*
 
   release:
     needs: build
@@ -73,6 +73,4 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            dist/sissues-ubuntu-latest
-            dist/sissues-windows-latest
-            dist/sissues-macos-latest
+            dist/*
