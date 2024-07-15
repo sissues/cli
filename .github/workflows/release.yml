@@ -37,8 +37,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: executable-${{ matrix.os }}
-          path: |
-            dist/*
+          path: dist/*
 
   release:
     needs: build
@@ -47,30 +46,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Download artifacts
+      - name: Download artifacts (Ubuntu)
         uses: actions/download-artifact@v2
         with:
           name: executable-ubuntu-latest
           path: dist/
-      - name: Download artifacts
+
+      - name: Download artifacts (Windows)
         uses: actions/download-artifact@v2
         with:
           name: executable-windows-latest
           path: dist/
-      - name: Download artifacts
+
+      - name: Download artifacts (macOS)
         uses: actions/download-artifact@v2
         with:
           name: executable-macos-latest
           path: dist/
+
+      - name: Create a unique tag
+        id: create_tag
+        run: echo "RELEASE_TAG=release-$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: Release ${{ env.RELEASE_TAG }}
           draft: false
           prerelease: false
-          files: |
-            dist/*
+          files: dist/*
