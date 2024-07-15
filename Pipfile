@@ -8,6 +8,7 @@ textualize = "*"
 textual = "*"
 requests = "*"
 flask = "*"
+pyinstaller = "*"
 
 [dev-packages]
 textual-dev = "*"
