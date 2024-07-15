@@ -35,15 +35,15 @@ jobs:
 
       - name: Test executable (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: ./dist/app --version
+        run: ./dist/sissues --version
 
       - name: Test executable (Windows)
         if: matrix.os == 'windows-latest'
-        run: .\dist\app.exe --version
+        run: .\dist\sissues.exe --version
 
       - name: Test executable (macOS)
         if: matrix.os == 'macos-latest'
-        run: ./dist/app --version
+        run: ./dist/sissues --version
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
