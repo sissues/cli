@@ -1,6 +1,7 @@
 import os
 import platform
 import subprocess
+import sys
 from pathlib import Path
 
 EXERCISES_DIR = Path(__file__).parent / "exercises"
@@ -25,3 +26,14 @@ class ExercisesUtils:
             subprocess.run(["open", file_path])
         else:  # Linux and other Unix-like systems
             subprocess.run(["xdg-open", file_path])
+
+    @staticmethod
+    def get_resource_path(relative_path):
+        """ Get the absolute path to the resource, accounting for PyInstaller packaging. """
+        try:
+            # PyInstaller creates a temporary folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except AttributeError:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)

@@ -104,10 +104,9 @@ class MarkdownApp(App):
 
     def run_tests(self, exercise_name: str) -> None:
         """Run tests for the selected exercise and display the output."""
-        log("starting to test")
         test_output = self.query_one("#test_output", TextArea)
-        log("found test_output")
-        command = f"docker-compose -f exercises_test_suites/docker_compose_{exercise_name}.yml up --build"
+        docker_compose_file_name = ExercisesUtils.get_resource_path(f"exercises_test_suites/docker_compose_{exercise_name}.yml")
+        command = f"docker-compose -f {docker_compose_file_name} up --build"
         try:
             test_output.notify("Tests execution started, might take a few seconds", timeout=3)
             result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
