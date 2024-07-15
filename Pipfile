@@ -9,6 +9,8 @@ textual = "*"
 requests = "*"
 flask = "*"
 pyinstaller = "*"
+macholib = "*"
+
 
 [dev-packages]
 textual-dev = "*"
