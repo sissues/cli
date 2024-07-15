@@ -1,0 +1,78 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Install dependencies
+        run: pipenv install --deploy --ignore-pipfile
+
+      - name: Build executable
+        run: |
+          pipenv run pyinstaller --onefile app.py
+        env:
+          DISPLAY: ":99.0"
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: executable-${{ matrix.os }}
+          path: |
+            dist/app
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: executable-ubuntu-latest
+          path: dist/
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: executable-windows-latest
+          path: dist/
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: executable-macos-latest
+          path: dist/
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          draft: false
+          prerelease: false
+          files: |
+            dist/sissues-ubuntu-latest
+            dist/sissues-windows-latest
+            dist/sissues-macos-latest
