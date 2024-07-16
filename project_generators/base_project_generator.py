@@ -1,5 +1,7 @@
 import os
 
+from exercises_utils import ExercisesUtils
+
 
 class BaseProjectGenerator:
     def generate(self, project_name: str) -> str:
@@ -8,26 +10,24 @@ class BaseProjectGenerator:
         Returns the path to the Dockerfile.
         """
         # Create the project directory
-        project_dir = os.path.join(os.getcwd(), 'my_solutions', project_name)
+        project_dir = ExercisesUtils.get_resource_path(f"my_solutions/{project_name}")
+        # project_dir = os.path.join(os.getcwd(), '', project_name)
         src_dir = os.path.join(project_dir, 'src')
         os.makedirs(src_dir, exist_ok=True)
 
         # Define a generic Dockerfile content
-        dockerfile_content = """
+        dockerfile_content = f"""
         # Use an official runtime as a parent image
 FROM <runtime_image>
 
 # Set the working directory in the container
-WORKDIR /app
-
-# Copy the requirements file into the container
-COPY requirements.txt ./
+WORKDIR /{project_name}
 
 # Install any dependencies
 RUN <install_command>
 
 # Copy the current directory contents into the container at /app
-COPY . .
+COPY src/ .
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
@@ -43,10 +43,15 @@ CMD [ "<start_command>" ]
 
         # Create a README file with guidelines
         readme_content = f"""
-        # {project_name}
+        # {' '.join(project_name.split('_')).title()}
+        
+## 
+## Supported Languages?
+
+**Every language and every API framework is supported.**
+You will be required to correctly write a dockerfile (given the template and the guide below), and the tests are on us.
 
 ## Project Setup
-
 1. **Install Dependencies**: Ensure you have Docker installed.
 2. **Build the Docker Image**: Run the following command in the project directory:
 ```
