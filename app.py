@@ -1,5 +1,6 @@
 import subprocess
 
+from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal
 from textual.widgets import Button, Footer, MarkdownViewer, Header, TextArea, Select, Label
@@ -15,9 +16,17 @@ class MarkdownApp(App):
     CSS_PATH = "app.css"
     BINDINGS = [
         ("t", "toggle_table_of_contents", "Toggle TOC"),
-        ("m", "toggle_menu", "Toggle Menu"),
+        ("h", "show_help", "Show Help"),
         ("q", "quit", "Quit")
     ]
+
+    help_text = """Pick an exercise, and generate a project template by click 'Start Project'
+Once you are done implementing the exercise requirements, click on 'Run Tests'.\n
+If all the tests passed, congrats!\n
+If not, keep at it, one test at a time :)\n
+
+[b][i]Got stuck?[/b][/i] \nRefer to the project's README.md at https://github.com/sissues/cli/blob/main/README.MD,\nor open an issue at https://github.com/sissues/cli/issues
+    """
 
     def __init__(self):
         super().__init__()
@@ -42,14 +51,7 @@ class MarkdownApp(App):
     def on_mount(self) -> None:
         """Initial setup when the app starts."""
         self.show_menu()
-        menu = self.query_one("#menu")
-        menu.notify(title="Hello World!", message="Pick an exercise you find interesting, read it by clicking on "
-                                                  "'View', create a template for a project by clicking on 'Start "
-                                                  "Project', and once you are done implementing the exercise, "
-                                                  "you can verify you did everything right by clicking on 'Run "
-                                                  "Tests'. Pretty Simple. But not easy :)\n\n"
-                                                  "Also... don't forget to read the README.md file once you click "
-                                                  "'Start Project'", timeout=30)
+        self.notify(title="Hello World!", message=self.help_text, timeout=30)
 
     def show_menu(self) -> None:
         menu = self.query_one("#menu")
@@ -57,10 +59,9 @@ class MarkdownApp(App):
 
         exercises = list(EXERCISES_DIR.glob("*.md"))
         exercise_names = [(self.files_view_names[exercise.stem], exercise.stem) for exercise in exercises]
-        select_file_widget = Select(options=exercise_names, prompt="Select Exercise", id="exercise_select", classes="menu_widget", tooltip="Select an exercise to preview")
+        select_file_widget = Select(options=exercise_names, allow_blank=False, prompt="Select Exercise", id="exercise_select", classes="menu_widget", tooltip="Select an exercise to preview")
 
         menu.mount(select_file_widget)
-        menu.mount(Button("View", id="view", variant="primary", classes="menu_widget"))
         menu.mount(Button("Start Project", id="start", variant="warning", classes="menu_widget"))
         menu.mount(Button("Run Tests", id="test", variant="success", classes="menu_widget"))
 
@@ -68,19 +69,8 @@ class MarkdownApp(App):
         button_id = event.button.id
         select_widget = self.query_one("#exercise_select", Select)
         exercise_name = select_widget.value
-        selected_exercise = EXERCISES_DIR / f"{exercise_name}.md"
 
-        if exercise_name == Select.BLANK:
-            select_widget.notify("Please select a file", severity="error", timeout=5)
-            return
-
-        if button_id == "view":
-            self.current_markdown_path = selected_exercise
-            markdown_viewer = self.query_one("#markdown_viewer", MarkdownViewer)
-            await markdown_viewer.go(selected_exercise)
-            self.query_one("#content").display = True
-
-        elif button_id == "test":
+        if button_id == "test":
             self.run_tests(exercise_name)
 
         elif button_id == 'start':
@@ -110,10 +100,16 @@ class MarkdownApp(App):
         markdown_viewer = self.query_one("#markdown_viewer", MarkdownViewer)
         markdown_viewer.show_table_of_contents = not markdown_viewer.show_table_of_contents
 
-    def action_toggle_menu(self) -> None:
-        """Toggle the display of the menu."""
-        menu = self.query_one("#menu")
-        menu.visible = not menu.visible
+    def action_show_help(self):
+        self.notify(title="Hello World!", message=self.help_text, timeout=30)
+
+    @on(Select.Changed)
+    async def view_select(self, event: Select.Changed):
+        selected_exercise = EXERCISES_DIR / f"{event.value}.md"
+        self.current_markdown_path = selected_exercise
+        markdown_viewer = self.query_one("#markdown_viewer", MarkdownViewer)
+        await markdown_viewer.go(selected_exercise)
+        self.query_one("#content").display = True
 
 
 if __name__ == "__main__":
