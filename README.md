@@ -23,7 +23,7 @@ To get started, you need to install the platform on your machine. Follow these s
 
 Once you have installed the platform, you can start working on your API projects. Here are some guides to help you get started:
 1. [Getting Started with Your API Project](https://github.com/sissues/cli/blob/main/docs/getting_started.md)
-2. [Getting Started with Docker for API Projects](https://github.com/sissues/cli/blob/main/docs/getting_start_with_docker.md)
+2. [Getting Started with Docker for API Projects](https://github.com/sissues/cli/blob/main/docs/getting_started_with_docker.md)
 
 ## Additional Resources
 
